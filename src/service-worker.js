@@ -97,6 +97,7 @@ async function processPolicyUrls(request) {
       policyUrlsList = await updatePolicyList(policyUrlsList);
       console.log(policyUrlsList);
 
+      // Scrape the URL
       let response = await scrapePolicyUrl(url);
       console.log(response)
     }
