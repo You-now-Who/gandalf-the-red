@@ -30,42 +30,81 @@ async function getPolicyList() {
   });
 }
 
-async function updatePolicyList(value) {
+async function initPolicyList(value) {
   // Adds new value to the local storage if it doesn't exist already
   let policyUrlsList = await getPolicyList();
   if (!Object.keys(policyUrlsList).includes(value)) {
     policyUrlsList[value] = {
       verdict: "undefined",
-      last_tested: "undefined",
+      lastTested: "undefined",
     };
 
     console.log("Updated new value");
     console.log(policyUrlsList);
   }
-  let confirmed = await chrome.storage.local.set({ policyUrlsList: policyUrlsList });
-  console.log(confirmed)
-  return policyUrlsList
+  updatePolicyList(policyUrlsList);
+
+  return policyUrlsList;
 }
 
-async function scrapeTermsFromUrl(request) {
-  const matchingElementsPolicy = request.matchingElementsPolicy
-//   console.log(request.originUrl);
-//   console.log(matchingElementsPolicy);
+async function updatePolicyList(policyUrlsList) {
+  // Just a wrapper that updates the values on the local storage
+  await chrome.storage.local.set({ policyUrlsList: policyUrlsList });
+  policyUrlsList = await getPolicyList();
 
-  let policyUrlsList = await getPolicyList()
+  return policyUrlsList;
+}
 
-  for (const index in request.matchingElementsPolicy){
-    let url = matchingElementsPolicy[index]
-    if (!Object.keys(policyUrlsList).includes(url)){
-        policyUrlsList = await updatePolicyList(url)
+async function ensureOffscreenDoc() {
+  const existing = await chrome.offscreen.hasDocument();
+  if (!existing) {
+    await chrome.offscreen.createDocument({
+      url: "scraper.html",
+      reasons: [chrome.offscreen.Reason.DOM_SCRAPING],
+      justification: "Parse HTML content and extract visible text",
+    });
+  }
+}
+
+async function scrapePolicyUrl(url) {
+  await ensureOffscreenDoc();
+
+  const response = await fetch(url);
+  const html = await response.text();
+
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ type: "parseHTML", html }, (response) =>
+      resolve(response.text)
+    );
+  });
+}
+
+async function processPolicyUrls(request) {
+  const matchingElementsPolicy = request.matchingElementsPolicy;
+
+  let policyUrlsList = await getPolicyList();
+
+  // Initializes policy URLs in local storage if they don't exist
+  for (const index in request.matchingElementsPolicy) {
+    let url = matchingElementsPolicy[index];
+    if (!Object.keys(policyUrlsList).includes(url)) {
+      policyUrlsList = await initPolicyList(url);
     }
-  } 
-  console.log(policyUrlsList)
+    // Process URL if not tested before
+    if (policyUrlsList[url].lastTested === "undefined") {
+      // Open in new tab
+      policyUrlsList[url].lastTested = Date.now();
+      policyUrlsList = await updatePolicyList(policyUrlsList);
+      console.log(policyUrlsList);
 
+      let response = await scrapePolicyUrl(url);
+      console.log(response)
+    }
+  }
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender) {
   if (request.type == "termsFound") {
-    scrapeTermsFromUrl(request);
+    processPolicyUrls(request);
   }
 });

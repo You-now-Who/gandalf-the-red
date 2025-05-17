@@ -18,6 +18,8 @@
   },
   "permissions": [
     "scripting",
+    "tabs",
+    "offscreen",
     "storage"
   ]
 }
