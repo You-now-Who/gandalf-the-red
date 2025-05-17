@@ -1,4 +1,5 @@
 const express = require('express')
+const aiWorker = require('./aiWorker')
 const app = express()
 const port = 3000
 
@@ -6,7 +7,11 @@ const port = 3000
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send("Hello, World!")
+    (async ()=> {
+        const response = await aiWorker.runAI()
+        console.log(response)
+        res.send(response.output_text)
+    })()
 })
 
 app.post('/', (req, res) => {
