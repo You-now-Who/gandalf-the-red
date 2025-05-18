@@ -1,7 +1,5 @@
 console.log("Content Script loaded");
 
-restrictedDomains: ["google", "facebook", "instagram"];
-
 function getElementsByTextContain(text, matchingElements) {
   /**
    * Returns links that may lead to privacy policy pages
@@ -19,6 +17,9 @@ function getElementsByTextContain(text, matchingElements) {
       matchingElements.push(linkUrl);
     }
   }
+
+  // Remove duplicate elements
+  matchingElements = [...new Set(matchingElements)];
   return matchingElements;
 }
 
@@ -41,7 +42,7 @@ async function getPolicyList() {
           console.log("Updated new value");
         });
 
-        resolve([]);
+        resolve({});
       } else {
         // Return the items. This bit of code would run the most
         console.log(items.policyUrlsList);
@@ -52,7 +53,7 @@ async function getPolicyList() {
 }
 
 (async () => {
-  policyUrlsList = await getPolicyList();
+  let policyUrlsList = await getPolicyList();
 
   let currentUrl = location.href;
   currentUrl = currentUrl.split(/[?#]/)[0];

@@ -1,6 +1,9 @@
 chrome.storage.local.clear(function () {
   console.log("All local storage cleared");
 });
+
+const API_URL = "http://localhost:3000/";
+
 async function getPolicyList() {
   /**
    * Gets the list of URLs tested for policies already. Useful so that theres not a loop
@@ -17,13 +20,13 @@ async function getPolicyList() {
         console.log("Initializing Policy URL List");
 
         chrome.storage.local.set({ policyUrlsList: {} }).then((result) => {
-          console.log("Updated new value");
+          // console.log("Updated new value");
         });
 
         resolve([]);
       } else {
         // Return the items. This bit of code would run the most
-        console.log(items.policyUrlsList);
+        // console.log(items.policyUrlsList);
         resolve(items.policyUrlsList);
       }
     });
@@ -39,8 +42,8 @@ async function initPolicyList(value) {
       lastTested: "undefined",
     };
 
-    console.log("Updated new value");
-    console.log(policyUrlsList);
+    // console.log("Updated new value");
+    // console.log(policyUrlsList);
   }
   updatePolicyList(policyUrlsList);
 
@@ -56,6 +59,7 @@ async function updatePolicyList(policyUrlsList) {
 }
 
 async function ensureOffscreenDoc() {
+  // Creates an offscreen document just for scraping
   const existing = await chrome.offscreen.hasDocument();
   if (!existing) {
     await chrome.offscreen.createDocument({
@@ -67,6 +71,7 @@ async function ensureOffscreenDoc() {
 }
 
 async function scrapePolicyUrl(url) {
+  // Scrapes policy from the html page
   await ensureOffscreenDoc();
 
   const response = await fetch(url);
@@ -77,6 +82,28 @@ async function scrapePolicyUrl(url) {
       resolve(response.text)
     );
   });
+}
+
+async function getVerdict(tosText, url) {
+  // Fetches the verdict from OpenAI using backend server
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ tosText: tosText, url: url }),
+  });
+
+  response
+    .json()
+    .then((data) => {
+      console.log(data); // Logs the parsed JSON object
+      return data;
+    })
+    .catch((error) => {
+      console.error("Error parsing JSON:", error);
+      return { error: "Error parsing JSON", details: error };
+    });
 }
 
 async function processPolicyUrls(request) {
@@ -95,11 +122,13 @@ async function processPolicyUrls(request) {
       // Open in new tab
       policyUrlsList[url].lastTested = Date.now();
       policyUrlsList = await updatePolicyList(policyUrlsList);
-      console.log(policyUrlsList);
+      // console.log(policyUrlsList);
 
       // Scrape the URL
-      let response = await scrapePolicyUrl(url);
-      console.log(response)
+      let tosText = await scrapePolicyUrl(url);
+      console.log(tosText);
+      const verdictObj = getVerdict(tosText, url);
+      console.log(verdictObj);
     }
   }
 }
@@ -108,4 +137,4 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
   if (request.type == "termsFound") {
     processPolicyUrls(request);
   }
-});
+}); 
