@@ -152,8 +152,8 @@ async function getVerdict(tosText, url) {
       return { error: "Server error", status: response.status };
     }
 
-    const data = await response.json(); // Properly await JSON parsing
-    console.log(data); // Logs the parsed JSON object
+    const data = await response.json();
+    console.log(data); 
     return data;
   } catch (error) {
     console.error("Error parsing JSON:", error);
@@ -203,7 +203,7 @@ async function processPolicyUrls(request) {
       let domainsList = await getDomainsList()
       console.log(domainsList)
       domainsList[currDomain][url] = verdictObj;
-
+      await updateDomainsList(domainsList)
     }
   }
   let domainsList = await getDomainsList()
