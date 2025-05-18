@@ -30,9 +30,15 @@ app.post('/', (req, res) => {
         // console.log(response)
         // outputJson = response.output_text.substring(8)
         // outputJson = outputJson.substring(-4)
-        outputJson = JSON.parse(response.output_text)
-        // console.log(outputJson)
-        res.send(outputJson)
+        try {
+            outputJson = JSON.parse(response.output_text);
+            // console.log(outputJson)
+            outputJson.url = data.url
+            res.send(outputJson);
+        } catch (error) {
+            console.error(error);
+            res.send({error: error})
+        }
     })()
 })
 
