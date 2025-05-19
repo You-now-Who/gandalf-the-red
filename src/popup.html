@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Middle Earth Grader</title>
+    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=UnifrakturCook:wght@700&family=Noto+Sans+Runic&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="parchment-container">
+        <!-- Runic border container -->
+        <div class="runic-border-container"></div>
+
+        <!-- Main view container -->
+        <div id="main-view" class="view-container">
+            <!-- Grade circle -->
+            <div class="grade-circle">
+                <span class="grade-letter">B</span>
+            </div>
+            
+            <!-- Title -->
+            <h1 class="parchment-title">Bonum</h1>
+            
+            <!-- LOTR Message -->
+            <p class="lotr-message">Second Breakfast Approved</p>
+            
+            <!-- Divider -->
+            <div class="elvish-divider">
+                <span class="divider-ornament">❧</span>
+            </div>
+            
+            <!-- URL List -->
+            <div class="url-list">
+                <!-- URLs will be dynamically populated here -->
+            </div>
+        </div>
+        
+        <!-- Details view container (initially hidden) -->
+        <div id="details-view" class="view-container hidden">
+            <!-- Back button -->
+            <button id="back-button" class="back-button">
+                <i class="fa fa-arrow-left"></i> Return to the Shire
+            </button>
+            
+            <!-- URL Details -->
+            <div class="url-details">
+                <h2 id="url-title" class="detail-title">URL Title</h2>
+                <div class="elvish-divider small">
+                    <span class="divider-ornament">❧</span>
+                </div>
+                
+                <!-- Summary -->
+                <div class="summary-container">
+                    <h3>Scroll Summary</h3>
+                    <p id="url-summary">This ancient scroll contains knowledge of the western lands, detailing trade routes and safe passages through the misty mountains. Proceed with caution as some paths may be watched.</p>
+                </div>
+                
+                <!-- Highlights -->
+                <div class="highlights-container">
+                    <h3>Highlights from the Scroll</h3>
+                    <div id="highlights-list" class="highlights-list">
+                        <!-- Highlights will be dynamically populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Highlight Details view (initially hidden) -->
+        <div id="highlight-view" class="view-container hidden">
+            <!-- Back button -->
+            <button id="highlight-back-button" class="back-button">
+                <i class="fa fa-arrow-left"></i> Back to Scroll
+            </button>
+            
+            <!-- Highlight Details -->
+            <div class="highlight-details">
+                <h2 id="highlight-title" class="detail-title">Highlight Detail</h2>
+                <div class="elvish-divider small">
+                    <span class="divider-ornament">❧</span>
+                </div>
+                
+                <div class="highlight-content">
+                    <div class="highlight-type" id="highlight-type">
+                        <!-- Will be dynamically populated -->
+                    </div>
+                    
+                    <div class="highlight-clause-container">
+                        <h3>Clause:</h3>
+                        <p id="highlight-clause" class="highlight-clause">Sample clause text will appear here.</p>
+                    </div>
+                    
+                    <div class="highlight-explanation-container">
+                        <h3>Explanation:</h3>
+                        <p id="highlight-explanation" class="highlight-explanation">Sample explanation will be much longer and explain the details of the clause in question.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

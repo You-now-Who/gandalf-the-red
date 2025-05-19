@@ -555,6 +555,7 @@ function injectScrollNotification(verdictObj) {
     /* Title styling */
     .scroll-notification-title {
       font-size: 1.2rem;
+      font-weight: bold;
       margin-bottom: 0.5rem;
       font-variant: small-caps;
       text-align: center;

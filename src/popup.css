@@ -1,0 +1,345 @@
+/* General Styling */
+:root {
+    --parchment-color: #f4e4c1;
+    --parchment-dark: #e5cfa0;
+    --border-color: #9c6644;
+    --text-color: #3e2723;
+    --pro-color: #2e7d32;
+    --con-color: #c62828;
+    --highlight-color: #8d6e63;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 360px;
+    height: 500px;
+    font-family: 'Cinzel', serif;
+    background-color: #333;
+}
+
+/* Parchment Container */
+.parchment-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--parchment-color) 0%, #ecd5a7 100%);
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    padding: 20px;
+    color: var(--text-color);
+    
+    /* Aged parchment texture */
+    /* background-image: 
+        linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px); */
+    background-size: 15px 15px;
+}
+
+/* Runic Border */
+.runic-border-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.runic-character {
+    position: absolute;
+    transform-origin: center;
+    font-family: 'Noto Sans Runic', sans-serif;
+    font-size: 0.8rem;
+    color: var(--border-color);
+    opacity: 0.01;
+}
+
+/* View Containers */
+.view-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    overflow-y: auto;
+    transition: transform 0.4s ease-in-out;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Grade Circle */
+.grade-circle {
+    width: 80px;
+    height: 80px;
+    border: 3px solid var(--border-color);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--parchment-color);
+    box-shadow: inset 0 0 5px var(--shadow-color);
+    position: relative;
+    z-index: 3;
+}
+
+.grade-letter {
+    font-family: 'UnifrakturCook', 'Copperplate', cursive;
+    font-size: 3rem;
+    color: var(--border-color);
+}
+
+/* Titles and Text */
+.parchment-title {
+    text-align: center;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.8rem;
+    margin: 0 0 10px;
+    color: var(--text-color);
+}
+
+.lotr-message {
+    text-align: center;
+    font-size: 1.1rem;
+    margin: 10px 0;
+    font-variant: small-caps;
+    letter-spacing: 0.5px;
+}
+
+.detail-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.5rem;
+    margin: 15px 0 10px;
+    text-align: center;
+}
+
+/* Elvish Divider */
+.elvish-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px 0;
+    width: 100%;
+    position: relative;
+}
+
+.elvish-divider:before,
+.elvish-divider:after {
+    content: "";
+    flex-grow: 1;
+    height: 1px;
+    background: var(--border-color);
+    margin: 0 10px;
+}
+
+.elvish-divider.small:before,
+.elvish-divider.small:after {
+    margin: 0 5px;
+}
+
+.divider-ornament {
+    font-size: 1.2rem;
+    color: var(--border-color);
+}
+
+/* URL List */
+.url-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.url-item {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.url-item:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.url-item-title {
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.url-item-domain {
+    font-size: 0.8rem;
+    color: var(--highlight-color);
+}
+
+/* Back Button */
+.back-button {
+    background: none;
+    border: none;
+    color: var(--border-color);
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    padding: 5px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 15px;
+    transition: color 0.2s;
+}
+
+.back-button:hover {
+    color: var(--text-color);
+}
+
+/* Details View Styling */
+.summary-container, 
+.highlights-container {
+    margin: 15px 0;
+}
+
+.summary-container h3,
+.highlights-container h3 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(156, 102, 68, 0.3);
+    padding-bottom: 5px;
+}
+
+/* Highlights */
+.highlights-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.highlight-item {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.highlight-item:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.highlight-item-type {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.2rem;
+}
+
+.highlight-item-content {
+    margin-top: 5px;
+    font-size: 0.9rem;
+}
+
+.pro-highlight .highlight-item-type {
+    color: var(--pro-color);
+}
+
+.con-highlight .highlight-item-type {
+    color: var(--con-color);
+}
+
+/* Highlight Details */
+.highlight-type {
+    text-align: right;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.highlight-type.pro {
+    color: var(--pro-color);
+}
+
+.highlight-type.con {
+    color: var(--con-color);
+}
+
+.highlight-clause-container,
+.highlight-explanation-container {
+    margin-bottom: 15px;
+}
+
+.highlight-clause-container h3,
+.highlight-explanation-container h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    border-bottom: 1px solid rgba(156, 102, 68, 0.2);
+    padding-bottom: 3px;
+}
+
+.highlight-clause {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 10px;
+    border-radius: 4px;
+    font-style: italic;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes runic-glow {
+    0% { opacity: 0.01; }
+    50% { opacity: 0.01; }
+    100% { opacity: 0.01; }
+}
+
+.runic-character {
+    animation: runic-glow 5s infinite ease-in-out;
+}
+
+.runic-character:nth-child(4n) {
+    animation-delay: 0.3s;
+}
+
+.runic-character:nth-child(4n+1) {
+    animation-delay: 0.6s;
+}
+
+.runic-character:nth-child(4n+2) {
+    animation-delay: 0.9s;
+}
+
+.view-container {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(156, 102, 68, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(156, 102, 68, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 102, 68, 0.7);
+}
