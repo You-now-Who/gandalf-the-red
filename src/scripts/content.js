@@ -91,7 +91,8 @@ function injectToast(verdictObj) {
       textColor: "#3e2723", // Dark brown text
       glow: "none", // No glow for A grade
       backgroundGradient: "linear-gradient(135deg, #f8f0d8 0%, #ede1c9 100%)",
-      gifUrl: "https://gifdb.com/images/high/smiling-gandalf-saying-no-6050j9wlqorn7adp.gif",
+      gifUrl:
+        "https://gifdb.com/images/high/smiling-gandalf-saying-no-6050j9wlqorn7adp.gif",
     },
     B: {
       phrase: "Bonum", // Good
@@ -101,7 +102,8 @@ function injectToast(verdictObj) {
       textColor: "#3e2723", // Dark brown text
       glow: "0 0 10px #ffd700", // Subtle gold glow for B
       backgroundGradient: "linear-gradient(135deg, #f4e4c1 0%, #ecd5a7 100%)",
-      gifUrl: "https://media1.tenor.com/m/SRvxzGVowVEAAAAC/breakfast-secondbreakfast.gif",
+      gifUrl:
+        "https://media1.tenor.com/m/SRvxzGVowVEAAAAC/breakfast-secondbreakfast.gif",
     },
     C: {
       phrase: "Acceptabile", // Acceptable
@@ -111,7 +113,8 @@ function injectToast(verdictObj) {
       textColor: "#3e2723", // Dark brown text
       glow: "0 0 20px #ffa500", // Orange glow for C
       backgroundGradient: "linear-gradient(135deg, #efe0b9 0%, #f3c89a 100%)",
-      gifUrl: "https://64.media.tumblr.com/0111540a582b7c6ed40616d070b6fc04/tumblr_mlxmd1Z7TL1qf5tr5o1_250.gifv",
+      gifUrl:
+        "https://64.media.tumblr.com/0111540a582b7c6ed40616d070b6fc04/tumblr_mlxmd1Z7TL1qf5tr5o1_250.gifv",
     },
     D: {
       phrase: "Submediocre", // Below Average
@@ -131,7 +134,8 @@ function injectToast(verdictObj) {
       textColor: "#2d1e12", // Very dark text
       glow: "0 0 40px #ff0000", // Intense red glow for E
       backgroundGradient: "linear-gradient(135deg, #e5cfa0 0%, #d98f6c 100%)",
-      gifUrl: "https://media.tenor.com/EgvXcIbZLqgAAAAM/gandalf-the-grey-lord-of-the-rings.gif",
+      gifUrl:
+        "https://media.tenor.com/EgvXcIbZLqgAAAAM/gandalf-the-grey-lord-of-the-rings.gif",
     },
   };
 
@@ -140,7 +144,7 @@ function injectToast(verdictObj) {
   const grade = verdictObj.overallGrade;
   const card = document.createElement("div");
   card.className = "profile-card";
-  
+
   // Close button
   const closeButton = document.createElement("button");
   closeButton.innerHTML = "×"; // Using × character instead of X
@@ -156,30 +160,32 @@ function injectToast(verdictObj) {
   // Add runic border container - add before content container
   const runicBorderContainer = document.createElement("div");
   runicBorderContainer.className = "runic-border-container";
-  card.appendChild(runicBorderContainer);  // This adds the runic container behind the content
+  card.appendChild(runicBorderContainer); // This adds the runic container behind the content
 
   // Add Elder Futhark runes around the border
   const runicText = "ᚲᚢᛊᛏᛟᛞᛟ ᛊᛖᚲᚱᛖᛏᛁ"; // The runes you provided
-  const expandedRunicText = runicText.repeat(6).replace(/\s+/g, ''); // Repeat runes and remove spaces to have enough characters
-  
+  const expandedRunicText = runicText.repeat(6).replace(/\s+/g, ""); // Repeat runes and remove spaces to have enough characters
+
   // Create runes around the border
   const numberOfRunes = 48; // Reduced number of runes for a more subtle effect
   const runeElements = [];
-  
+
   for (let i = 0; i < numberOfRunes; i++) {
     const rune = document.createElement("span");
     rune.className = "runic-character";
     rune.textContent = expandedRunicText[i % expandedRunicText.length];
-    
+
     // Calculate position around the border
-    const angle = (i * (360 / numberOfRunes)) * (Math.PI / 180);
+    const angle = i * (360 / numberOfRunes) * (Math.PI / 180);
     const radius = 150; // Reduced radius to bring runes closer to content edge
-    
+
     // Position rune
     const x = Math.cos(angle) * radius;
     const y = Math.sin(angle) * radius;
-    
-    rune.style.transform = `translate(${x}px, ${y}px) rotate(${angle + Math.PI/2}rad)`;
+
+    rune.style.transform = `translate(${x}px, ${y}px) rotate(${
+      angle + Math.PI / 2
+    }rad)`;
     runicBorderContainer.appendChild(rune);
     runeElements.push(rune);
   }
@@ -246,7 +252,9 @@ function injectToast(verdictObj) {
         box-shadow: 
           0 5px 15px rgba(0, 0, 0, 0.3),
           inset 0 0 10px rgba(139, 94, 60, 0.2),
-          ${gradeData[grade].glow === 'none' ? '' : gradeData[grade].glow}; /* Apply external glow based on grade */
+          ${
+            gradeData[grade].glow === "none" ? "" : gradeData[grade].glow
+          }; /* Apply external glow based on grade */
         
         /* Decorative borders */
         border-top: 4px double ${gradeData[grade].borderColor};
@@ -333,7 +341,9 @@ function injectToast(verdictObj) {
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: ${gradeData[grade].color}; /* Solid background to hide runes */
+        background-color: ${
+          gradeData[grade].color
+        }; /* Solid background to hide runes */
         box-shadow: inset 0 0 10px rgba(139, 94, 60, 0.2);
         position: relative;
         z-index: 3; /* Make sure logo is above runes */
@@ -438,7 +448,8 @@ function injectToast(verdictObj) {
     // Load custom fonts
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=UnifrakturCook:wght@700&family=Noto+Sans+Runic&display=swap";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=UnifrakturCook:wght@700&family=Noto+Sans+Runic&display=swap";
     document.head.appendChild(link);
   }
 
@@ -450,7 +461,7 @@ function injectScrollNotification(verdictObj) {
   // Create the scroll notification
   const scrollNotification = document.createElement("div");
   scrollNotification.className = "scroll-notification";
-  
+
   // Create message element (to keep text content separate from close button)
   const messageEl = document.createElement("div");
   messageEl.className = "scroll-notification-message";
@@ -660,3 +671,12 @@ function injectScrollNotification(verdictObj) {
     }
   }
 })();
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.type === "getDomain") {
+    const currentUrl = location.href;
+    const currentDomain = extractDomain(currentUrl);
+    sendResponse({ domain: currentDomain }); // Send the domain as a response
+  }
+  return true; // Keep the message channel open for asynchronous responses
+});

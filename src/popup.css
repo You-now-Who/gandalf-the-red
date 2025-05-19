@@ -19,6 +19,10 @@ body, html {
     background-color: #333;
 }
 
+p {
+    font-size: 14px;
+}
+
 /* Parchment Container */
 .parchment-container {
     position: relative;

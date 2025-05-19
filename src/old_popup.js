@@ -106,6 +106,7 @@ let dummyData = {
   ],
 };
 
+// Consolidated grade data
 const gradeData = {
   A: {
     phrase: "Valde Bonum", // Very Good
@@ -162,6 +163,34 @@ const gradeData = {
       "https://media.tenor.com/EgvXcIbZLqgAAAAM/gandalf-the-grey-lord-of-the-rings.gif",
   },
 };
+
+async function getDomainsList() {
+  /**
+   * Gets the list of Domains with existing verdicts.
+   */
+
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get("domainsList", function (items) {
+      if (chrome.runtime.lastError) {
+        // Return errors
+        reject(chrome.runtime.lastError);
+      } else if (items.domainsList === undefined) {
+        // Initialise the local storage key if it doesn't exist.
+        console.log("Initializing Domain List");
+
+        chrome.storage.local.set({ domainsList: {} }).then((result) => {
+          console.log("Updated new value");
+        });
+
+        resolve({});
+      } else {
+        // Return the items. This bit of code would run the most
+        console.log(items.domainsList);
+        resolve(items.domainsList);
+      }
+    });
+  });
+}
 
 // Create runic border
 function createRunicBorder() {
@@ -309,41 +338,6 @@ function showMainView() {
   document.getElementById("highlight-view").classList.add("hidden");
 }
 
-async function getDomainsList() {
-  /**
-   * Gets the list of Domains with existing verdicts.
-   */
-
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get("domainsList", function (items) {
-      if (chrome.runtime.lastError) {
-        // Return errors
-        reject(chrome.runtime.lastError);
-      } else if (items.domainsList === undefined) {
-        // Initialise the local storage key if it doesn't exist.
-        console.log("Initializing Domain List");
-
-        chrome.storage.local.set({ domainsList: {} }).then((result) => {
-          console.log("Updated new value");
-        });
-
-        resolve({});
-      } else {
-        // Return the items. This bit of code would run the most
-        console.log(items.domainsList);
-        resolve(items.domainsList);
-      }
-    });
-  });
-}
-
-function extractDomain(url) {
-  // Extracts domain from the URL
-  const regex = /(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/;
-  const match = url.match(regex);
-  return match ? match[1] : null;
-}
-
 function transformScrapedData(scrapedData) {
   // Extract overall grade from scraped data
   const grade = scrapedData.overallGrade;
@@ -408,33 +402,40 @@ function transformScrapedData(scrapedData) {
   return transformedData;
 }
 
-async function getCurrentDomain() {
-  let queryOptions = { active: true, lastFocusedWindow: true };
-  // `tab` will either be a `tabs.Tab` instance or `undefined`.
-  let [tab] = await chrome.tabs.query(queryOptions);
-  const currDomain = extractDomain(tab.url);
-  return currDomain;
+function extractDomain(url) {
+  // Extracts domain from the URL
+  const regex = /(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/;
+  const match = url.match(regex);
+  return match ? match[1] : null;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  (async () => {
-    let domainsList = await getDomainsList();
+async function getCurrentDomain() {
+    let queryOptions = { active: true, lastFocusedWindow: true };
+    // `tab` will either be a `tabs.Tab` instance or `undefined`.
+    let [tab] = await chrome.tabs.query(queryOptions);
+    const currDomain = extractDomain(tab.url);
+    return (currDomain);
+}
 
-    const currentDomain = await getCurrentDomain();
-    console.log(currentDomain);
-      const transformedData = transformScrapedData(domainsList[currentDomain]);
-      dummyData = transformedData;
-      console.log(transformedData);
-    // Initialize the extension when the document is loaded
+(async () => {
+  let domainsList = await getDomainsList();
+//   const currentUrl = window.location.href;
+  const currentDomain = await getCurrentDomain();
 
-    console.log("Reached here");
+//   console.log(currentDomain)
+
+  const transformedData = transformScrapedData(domainsList[currentDomain]);
+  console.log(transformedData)
+//   dummyData = transformedData
+  // Initialize the extension when the document is loaded
+  document.addEventListener("DOMContentLoaded", function () {
     // Add runic border
     createRunicBorder();
 
     // Set main grade and message
     document.querySelector(".grade-letter").textContent = dummyData.grade;
-    document.querySelector(".parchment-title").textContent = dummyData.message;
-    document.querySelector(".lotr-message").textContent = dummyData.phrase;
+    document.querySelector(".parchment-title").textContent = dummyData.phrase;
+    document.querySelector(".lotr-message").textContent = dummyData.message;
 
     // Populate URL list
     populateUrlList();
@@ -452,5 +453,5 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         showDetailsView(urlId);
       });
-  })();
-});
+  });
+})();
