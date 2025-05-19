@@ -346,6 +346,9 @@ function extractDomain(url) {
 
 function transformScrapedData(scrapedData) {
   // Extract overall grade from scraped data
+  if (scrapedData === undefined) {
+    return { error: "unavailableData" };
+  }
   const grade = scrapedData.overallGrade;
 
   // Get grade-specific styling and phrases from gradeData
@@ -422,35 +425,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const currentDomain = await getCurrentDomain();
     console.log(currentDomain);
-      const transformedData = transformScrapedData(domainsList[currentDomain]);
-      dummyData = transformedData;
-      console.log(transformedData);
+    const transformedData = transformScrapedData(domainsList[currentDomain]);
+    dummyData = transformedData;
+    console.log(transformedData);
     // Initialize the extension when the document is loaded
 
-    console.log("Reached here");
     // Add runic border
     createRunicBorder();
 
-    // Set main grade and message
-    document.querySelector(".grade-letter").textContent = dummyData.grade;
-    document.querySelector(".parchment-title").textContent = dummyData.message;
-    document.querySelector(".lotr-message").textContent = dummyData.phrase;
+    if (transformedData.error === "unavailableData") {
+      // Populate UI with "No data exists" messages
+      document.querySelector(".grade-letter").textContent = "?";
+      document.querySelector(".parchment-title").textContent = "No Data Exists";
+      document.querySelector(".lotr-message").textContent =
+        "The data you seek is lost to shadow and flame.";
+      document.querySelector(".url-list").innerHTML =
+        "<div class='no-data'>We journeyed through shadowed valleys and over windswept peaks, but no scroll bearing the Privacy Policy was found. Perhaps it lies in another realm — or another site.</div>";
+    } else {
+      // Set main grade and message
+      document.querySelector(".grade-letter").textContent = dummyData.grade;
+      document.querySelector(".parchment-title").textContent =
+        dummyData.message;
+      document.querySelector(".lotr-message").textContent = dummyData.phrase;
 
-    // Populate URL list
-    populateUrlList();
+      // Populate URL list
+      populateUrlList();
 
-    // Add event listeners for navigation
-    document
-      .getElementById("back-button")
-      .addEventListener("click", showMainView);
-    document
-      .getElementById("highlight-back-button")
-      .addEventListener("click", function () {
-        // Get the current URL ID from the highlight view
-        const urlId = parseInt(
-          document.getElementById("highlight-view").dataset.urlId
-        );
-        showDetailsView(urlId);
-      });
+      // Add event listeners for navigation
+      document
+        .getElementById("back-button")
+        .addEventListener("click", showMainView);
+      document
+        .getElementById("highlight-back-button")
+        .addEventListener("click", function () {
+          // Get the current URL ID from the highlight view
+          const urlId = parseInt(
+            document.getElementById("highlight-view").dataset.urlId
+          );
+          showDetailsView(urlId);
+        });
+    }
   })();
 });
