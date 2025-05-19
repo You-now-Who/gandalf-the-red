@@ -194,7 +194,7 @@ async function updateDomainOverallRating(currDomain) {
     }
   }
 
-  const averageValue = Math.floor(total / count);
+  const averageValue = Math.round(total / count);
   const averageGrade = valueToGrade[averageValue];
 
   console.log(`Average grade: ${averageGrade}`);

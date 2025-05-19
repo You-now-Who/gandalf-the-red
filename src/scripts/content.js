@@ -81,20 +81,51 @@ async function getDomainsList() {
 }
 
 function injectToast(verdictObj) {
-  // Injects a notification into the DOM saying the verdict is ready
-
-  const gradePhrases = {
-    A: "Valde Bonum", // Very Good
-    B: "Bonum", // Good
-    C: "Acceptabile", // Acceptable
-    D: "Submediocre", // Below Average
-    E: "Male Factum", // Poorly Done
+  // Consolidated grade data
+  const gradeData = {
+    A: {
+      phrase: "Valde Bonum", // Very Good
+      gandalfPhrase: "Gandalf Smiles Upon You",
+      color: "#f4e4c1", // Light parchment for A
+      glow: "none", // No glow for A
+      gifUrl: "https://gifdb.com/images/high/smiling-gandalf-saying-no-6050j9wlqorn7adp.gif",
+    },
+    B: {
+      phrase: "Bonum", // Good
+      gandalfPhrase: "Second Breakfast Approved",
+      color: "#f4d9b0", // Soft beige for B
+      glow: "0 0 10px #ffd700", // Subtle gold glow for B
+      gifUrl: "https://media1.tenor.com/m/SRvxzGVowVEAAAAC/breakfast-secondbreakfast.gif",
+    },
+    C: {
+      phrase: "Acceptabile", // Acceptable
+      gandalfPhrase: "Proceed with Caution",
+      color: "#f3c89a", // Warm peach for C
+      glow: "0 0 15px #ffa500", // Orange glow for C
+      gifUrl: "https://64.media.tumblr.com/0111540a582b7c6ed40616d070b6fc04/tumblr_mlxmd1Z7TL1qf5tr5o1_250.gifv",
+    },
+    D: {
+      phrase: "Submediocre", // Below Average
+      gandalfPhrase: "The Eye of Sauron Watches",
+      color: "#eab085", // Muted orange for D
+      glow: "0 0 20px #ff4500", // Red-orange glow for D
+      gifUrl: "https://media1.tenor.com/m/k0cPQlr82ycAAAAC/sauron-lotr.gif",
+    },
+    E: {
+      phrase: "Male Factum", // Poorly Done
+      gandalfPhrase: "YOU SHALL NOT PASS",
+      color: "#d98f6c", // Subtle terracotta for E
+      glow: "0 0 25px #ff0000", // Intense red glow for E
+      gifUrl: "https://media.tenor.com/EgvXcIbZLqgAAAAM/gandalf-the-grey-lord-of-the-rings.gif",
+    },
   };
 
   console.log(verdictObj);
 
+  const grade = verdictObj.overallGrade;
   const card = document.createElement("div");
   card.className = "profile-card";
+  card.style.backgroundColor = gradeData[grade].color; // Change background color based on grade
 
   // Close button
   const closeButton = document.createElement("button");
@@ -108,31 +139,32 @@ function injectToast(verdictObj) {
   logo.className = "profile-logo";
   const letter = document.createElement("span");
   letter.className = "profile-letter";
-  letter.textContent = verdictObj.overallGrade;
+  letter.textContent = grade;
+  letter.style.textShadow = gradeData[grade].glow; // Add glow effect to the grade
   logo.appendChild(letter);
   card.appendChild(logo);
 
   // Title
   const title = document.createElement("h2");
   title.className = "profile-title";
-  title.textContent = gradePhrases[verdictObj.overallGrade];
-  // title.style.color = "white";
+  title.textContent = gradeData[grade].phrase;
   card.appendChild(title);
 
   // Add Gandalf's disapproval message
   const disapprovalMessage = document.createElement("p");
   disapprovalMessage.className = "profile-disapproval-message";
-  disapprovalMessage.textContent = "Gandalf does not approve.";
+  disapprovalMessage.textContent = gradeData[grade].gandalfPhrase;
   card.appendChild(disapprovalMessage);
 
   // Add Gandalf GIF
   const gandalfGif = document.createElement("img");
   gandalfGif.className = "profile-gandalf-gif";
-  gandalfGif.src = "https://media.giphy.com/media/14tvbepZ8vhU40/giphy.gif"; // Example Gandalf GIF
+  gandalfGif.src = gradeData[grade].gifUrl; // Example Gandalf GIF
   gandalfGif.alt = "Gandalf does not approve";
   gandalfGif.style.width = "100px"; // Adjust size as needed
   gandalfGif.style.marginTop = "1rem";
-  // card.appendChild(gandalfGif);
+  gandalfGif.style.marginBottom = "1rem";
+  card.appendChild(gandalfGif);
 
   // Button
   const detailsButton = document.createElement("button");
@@ -149,7 +181,6 @@ function injectToast(verdictObj) {
                   position: fixed;
                   top: 1rem;
                   right: 1rem;
-                  background-color: #f4e4c1; /* Parchment-like color */
                   color: #3e2723; /* Dark brown text for a medieval feel */
                   padding: 3rem 2rem;
                   border-radius: 1rem; /* Slightly rounded corners */
