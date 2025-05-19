@@ -11,7 +11,7 @@ textTos = aiWorker.getTextTos()
 app.get('/', (req, res) => {
     // Gets a sample
     (async ()=> {
-        const response = await aiWorker.runAI(test_tos)
+        const response = await aiWorker.runAI(testTos)
         console.log(response)
         // outputJson = response.output_text.substring(8)
         // outputJson = outputJson.substring(-4)

@@ -173,7 +173,7 @@ function extractDomain(url) {
   return match ? match[1] : null;
 }
 
-async function getDomainOverallRating(currDomain) {
+async function updateDomainOverallRating(currDomain) {
   // Function that processes the domain itself to provide an Overall rating
 
   let domainsList = await getDomainsList();
@@ -241,18 +241,22 @@ async function processPolicyUrls(request) {
 
   // NOTES FOR TOMMOROW:
 
-  getDomainOverallRating(currDomain);
+  updateDomainOverallRating(currDomain);
 
   // Trigger a new chrome message that will go on the active tab and check the domain.
   // If on the same domain, insert a popup to let know verdict is ready
+
+  return true
 
   // Create popup.html + popup.js to show the verdict
 
   // Start working on the docs + integration with LOTR themes as per idea
 }
 
-chrome.runtime.onMessage.addListener(function (request, sender) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  
   if (request.type == "termsFound") {
-    processPolicyUrls(request);
+    const isVerdictAvailable = processPolicyUrls(request);
+    sendResponse(isVerdictAvailable)
   }
 });

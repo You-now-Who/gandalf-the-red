@@ -52,6 +52,65 @@ async function getPolicyList() {
   });
 }
 
+function injectToast() {
+  // Injects a notification into the DOM saying the verdict is ready
+  const toast = document.createElement("div");
+  toast.textContent = "Verdict is ready!";
+  toast.className = "minimal-toast";
+
+  // Create a close button
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "✖";
+  closeButton.className = "toast-close-button";
+  closeButton.addEventListener("click", () => {
+    toast.remove();
+  });
+
+  // Append the close button to the toast
+  toast.appendChild(closeButton);
+
+  // Inject styles once
+  if (!document.getElementById("minimal-toast-style")) {
+    const style = document.createElement("style");
+    style.id = "minimal-toast-style";
+    style.textContent = `
+       .minimal-toast {
+         position: fixed;
+         top: 20px;
+         right: 20px;
+         background-color: #333;
+         color: #fff;
+         padding: 16px 32px;
+         border-radius: 10px;
+         font-size: 18px;
+         font-family: sans-serif;
+         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+         z-index: 10000;
+         display: flex;
+         align-items: center;
+         justify-content: space-between;
+         gap: 10px;
+       }
+
+       .toast-close-button {
+         background: none;
+         border: none;
+         color: #fff;
+         font-size: 16px;
+         cursor: pointer;
+       }
+
+       .toast-close-button:hover {
+         color: #ccc;
+       }
+     `;
+    document.head.appendChild(style);
+  }
+
+  // Append toast
+  document.body.appendChild(toast);
+}
+
 (async () => {
   let policyUrlsList = await getPolicyList();
 
@@ -76,11 +135,15 @@ async function getPolicyList() {
       matchingElementsPolicy
     );
 
-    chrome.runtime.sendMessage({
+    const isVerdictAvailable = await chrome.runtime.sendMessage({
       type: "termsFound",
       originUrl: currentUrl,
       matchingElements: [matchingElementsPolicy],
       matchingElementsPolicy: matchingElementsPolicy,
     });
+
+    if (isVerdictAvailable) {
+      injectToast();
+    }
   }
 })();
