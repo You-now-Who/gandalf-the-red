@@ -204,6 +204,7 @@ async function updateDomainOverallRating(currDomain) {
 }
 
 async function processPolicyUrls(request) {
+  let showPrivacyToast = false;
   const matchingElementsPolicy = request.matchingElementsPolicy;
 
   let policyUrlsList = await getPolicyList();
@@ -219,6 +220,7 @@ async function processPolicyUrls(request) {
     if (policyUrlsList[url].lastTested === "undefined") {
       // Open in new tab
       policyUrlsList[url].lastTested = Date.now();
+      showPrivacyToast = true;
 
       // Scrape the URL
       let tosText = await scrapePolicyUrl(url);
@@ -241,12 +243,17 @@ async function processPolicyUrls(request) {
 
   // NOTES FOR TOMMOROW:
 
-  updateDomainOverallRating(currDomain);
+  await updateDomainOverallRating(currDomain);
 
   // Trigger a new chrome message that will go on the active tab and check the domain.
   // If on the same domain, insert a popup to let know verdict is ready
 
-  return true
+  const domainsList = await getDomainsList()
+
+  return {
+    isVerdictAvailable: showPrivacyToast,
+    verdict: domainsList[currDomain]
+  }
 
   // Create popup.html + popup.js to show the verdict
 
@@ -255,8 +262,13 @@ async function processPolicyUrls(request) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   
-  if (request.type == "termsFound") {
-    const isVerdictAvailable = processPolicyUrls(request);
-    sendResponse(isVerdictAvailable)
-  }
+  (async () => {
+    if (request.type == "termsFound") {
+      const verdict = await processPolicyUrls(request);
+      console.log(verdict)
+      await sendResponse(verdict)
+    }
+  })();
+
+  return true;
 });
