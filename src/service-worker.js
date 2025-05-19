@@ -84,7 +84,7 @@ async function initDomainInList(value) {
   if (!Object.keys(domainsList).includes(value)) {
     domainsList[value] = {
       scrapedPages: {},
-      overallGrade: ""
+      overallGrade: "",
     };
 
     // console.log("Updated new value");
@@ -138,6 +138,7 @@ async function scrapePolicyUrl(url) {
 }
 
 async function getVerdict(tosText, url) {
+  // Fetches verdict of the text from the api
   try {
     const response = await fetch(API_URL, {
       method: "POST",
@@ -148,12 +149,16 @@ async function getVerdict(tosText, url) {
     });
 
     if (!response.ok) {
-      console.error("Server returned an error:", response.status, response.statusText);
+      console.error(
+        "Server returned an error:",
+        response.status,
+        response.statusText
+      );
       return { error: "Server error", status: response.status };
     }
 
     const data = await response.json();
-    console.log(data); 
+    // console.log(data);
     return data;
   } catch (error) {
     console.error("Error parsing JSON:", error);
@@ -162,19 +167,47 @@ async function getVerdict(tosText, url) {
 }
 
 function extractDomain(url) {
+  // Extracts domain from the URL
   const regex = /(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/;
   const match = url.match(regex);
   return match ? match[1] : null;
 }
 
-function processDomain(currentUrl) {
+async function getDomainOverallRating(currDomain) {
+  // Function that processes the domain itself to provide an Overall rating
 
+  let domainsList = await getDomainsList();
+  const gradeToValue = { A: 0, B: 1, C: 2, D: 3, E: 4 };
+  const valueToGrade = ["A", "B", "C", "D", "E"];
+
+  const scrapedPages = domainsList[currDomain].scrapedPages;
+
+  let total = 0;
+  let count = 0;
+
+  for (const url in scrapedPages) {
+    const grade = scrapedPages[url].grade;
+    console.log(grade);
+    if (gradeToValue.hasOwnProperty(grade)) {
+      total += gradeToValue[grade];
+      count++;
+    }
+  }
+
+  const averageValue = Math.floor(total / count);
+  const averageGrade = valueToGrade[averageValue];
+
+  console.log(`Average grade: ${averageGrade}`);
+  domainsList[currDomain].overallGrade = averageGrade;
+  updateDomainsList(domainsList);
+  return(domainsList)
 }
 
 async function processPolicyUrls(request) {
   const matchingElementsPolicy = request.matchingElementsPolicy;
 
   let policyUrlsList = await getPolicyList();
+  const currDomain = extractDomain(request.originUrl);
 
   // Initializes policy URLs in local storage if they don't exist
   for (const index in matchingElementsPolicy) {
@@ -191,28 +224,35 @@ async function processPolicyUrls(request) {
       let tosText = await scrapePolicyUrl(url);
       console.log(tosText);
       const verdictObj = await getVerdict(tosText, url);
-      console.log(verdictObj);
+      // console.log(verdictObj);
       policyUrlsList[url].verdict = verdictObj;
 
       // Update the local storage
       policyUrlsList = await updatePolicyList(policyUrlsList);
-      
+
       // Add the url to the domain
-      const currDomain = extractDomain(request.originUrl);
-      await initDomainInList(currDomain)
-      let domainsList = await getDomainsList()
-      console.log(domainsList)
-      domainsList[currDomain][url] = verdictObj;
-      await updateDomainsList(domainsList)
+      await initDomainInList(currDomain);
+      let domainsList = await getDomainsList();
+      console.log(domainsList);
+      domainsList[currDomain].scrapedPages[url] = verdictObj;
+      await updateDomainsList(domainsList);
     }
   }
-  let domainsList = await getDomainsList()
-  // console.log(domainsList)
-  // processDomain(request.originUrl, )
+
+  // NOTES FOR TOMMOROW:
+
+  getDomainOverallRating(currDomain);
+
+  // Trigger a new chrome message that will go on the active tab and check the domain.
+  // If on the same domain, insert a popup to let know verdict is ready
+
+  // Create popup.html + popup.js to show the verdict
+
+  // Start working on the docs + integration with LOTR themes as per idea
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender) {
   if (request.type == "termsFound") {
     processPolicyUrls(request);
   }
-}); 
+});
