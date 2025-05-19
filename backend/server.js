@@ -6,12 +6,12 @@ const port = 3000
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
-textTos = aiWorker.getTextTos()
+let textTos = aiWorker.getTextTos()
 
 app.get('/', (req, res) => {
     // Gets a sample
     (async ()=> {
-        const response = await aiWorker.runAI(testTos)
+        const response = await aiWorker.runAI(textTos)
         console.log(response)
         // outputJson = response.output_text.substring(8)
         // outputJson = outputJson.substring(-4)
