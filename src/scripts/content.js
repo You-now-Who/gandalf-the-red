@@ -223,6 +223,12 @@ function injectToast(verdictObj) {
   const detailsButton = document.createElement("button");
   detailsButton.className = "profile-details-button";
   detailsButton.textContent = "See Details";
+  detailsButton.addEventListener("click", () => {
+    chrome.runtime.sendMessage({
+      type: "openPopup"
+    });
+    card.remove();
+  });
   contentContainer.appendChild(detailsButton);
 
   // Inject styles once
@@ -625,11 +631,11 @@ function injectScrollNotification(verdictObj) {
   document.body.appendChild(scrollNotification);
 
   // Auto-remove after 5 seconds
-  // setTimeout(() => {
-  //   if (scrollNotification.parentElement) {
-  //     scrollNotification.remove();
-  //   }
-  // }, 5000);
+  setTimeout(() => {
+    if (scrollNotification.parentElement) {
+      scrollNotification.remove();
+    }
+  }, 5000);
 }
 
 // Modify the main function to use the scroll notification

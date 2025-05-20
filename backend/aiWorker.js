@@ -59,6 +59,10 @@ module.exports= {
     //     input: prompt + tos
     // });
 
+    // if (response.output_text.startsWith("```json")) {
+    //   response.output_text = response.output_text.slice(7, -4).trim();
+    // }
+
     const response = {}
     const grades = ["A", "B", "C", "D", "E"];
     const randomGrade = grades[Math.floor(Math.random() * grades.length)];

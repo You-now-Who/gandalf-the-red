@@ -113,7 +113,7 @@ const gradeData = {
     color: "#f8f0d8", // Light parchment for A
     borderColor: "#a87e58", // Rich brown border
     textColor: "#3e2723", // Dark brown text
-    glow: "none", // No glow for A grade
+    glow: "0 0 15px #4caf50, 0 0 25px #4caf50", // More prominent green glow for A
     backgroundGradient: "linear-gradient(135deg, #f8f0d8 0%, #ede1c9 100%)",
     gifUrl:
       "https://gifdb.com/images/high/smiling-gandalf-saying-no-6050j9wlqorn7adp.gif",
@@ -124,7 +124,7 @@ const gradeData = {
     color: "#f4e4c1", // Slightly darker parchment
     borderColor: "#9c6644", // Richer brown border
     textColor: "#3e2723", // Dark brown text
-    glow: "0 0 10px #ffd700", // Subtle gold glow for B
+    glow: "0 0 15px #ffd700, 0 0 25px #ffd700", // More prominent gold glow for B
     backgroundGradient: "linear-gradient(135deg, #f4e4c1 0%, #ecd5a7 100%)",
     gifUrl:
       "https://media1.tenor.com/m/SRvxzGVowVEAAAAC/breakfast-secondbreakfast.gif",
@@ -135,7 +135,7 @@ const gradeData = {
     color: "#efe0b9", // Warmer parchment tone
     borderColor: "#8d5524", // Darker brown border
     textColor: "#3e2723", // Dark brown text
-    glow: "0 0 20px #ffa500", // Orange glow for C
+    glow: "0 0 15px #ffa500, 0 0 25px #ffa500", // More prominent orange glow for C
     backgroundGradient: "linear-gradient(135deg, #efe0b9 0%, #f3c89a 100%)",
     gifUrl:
       "https://64.media.tumblr.com/0111540a582b7c6ed40616d070b6fc04/tumblr_mlxmd1Z7TL1qf5tr5o1_250.gifv",
@@ -146,7 +146,7 @@ const gradeData = {
     color: "#e8d8a9", // Aged parchment tone
     borderColor: "#704214", // Dark border
     textColor: "#33261d", // Darker text
-    glow: "0 0 30px #ff4500", // Red-orange glow for D
+    glow: "0 0 15px #ff4500, 0 0 25px #ff4500", // More prominent red-orange glow for D
     backgroundGradient: "linear-gradient(135deg, #e8d8a9 0%, #eab085 100%)",
     gifUrl: "https://media1.tenor.com/m/k0cPQlr82ycAAAAC/sauron-lotr.gif",
   },
@@ -156,7 +156,7 @@ const gradeData = {
     color: "#e5cfa0", // Yellowed parchment
     borderColor: "#5d3511", // Very dark border
     textColor: "#2d1e12", // Very dark text
-    glow: "0 0 40px #ff0000", // Intense red glow for E
+    glow: "0 0 15px #ff0000, 0 0 30px #ff0000", // More prominent red glow for E
     backgroundGradient: "linear-gradient(135deg, #e5cfa0 0%, #d98f6c 100%)",
     gifUrl:
       "https://media.tenor.com/EgvXcIbZLqgAAAAM/gandalf-the-grey-lord-of-the-rings.gif",
@@ -204,7 +204,7 @@ function populateUrlList() {
 
     urlItem.innerHTML = `
             <div class="url-item-title">${url.title}</div>
-            <div class="url-item-domain">${url.domain}</div>
+            <div class="url-item-domain">${url.url}</div>
         `;
 
     urlItem.addEventListener("click", function () {
@@ -222,9 +222,20 @@ function showDetailsView(urlId) {
   if (!urlData) return;
 
   // Set URL details
+  console.log(`grade of policy ${urlData.url} is ${urlData.grade}`);
+  
+  // Update scroll grade letter with content and glow
+  const scrollGradeLetter = document.querySelector(".scroll-grade-letter");
+  scrollGradeLetter.textContent = urlData.grade;
+  
+  // Apply the corresponding enhanced glow based on grade
+  if (gradeData[urlData.grade]) {
+    scrollGradeLetter.style.textShadow = gradeData[urlData.grade].glow;
+  }
+  
   document.getElementById("url-title").textContent = urlData.title;
   document.getElementById("url-summary").textContent = urlData.summary;
-
+  
   // Clear and populate highlights
   const highlightsList = document.getElementById("highlights-list");
   highlightsList.innerHTML = "";
@@ -330,7 +341,7 @@ async function getDomainsList() {
         resolve({});
       } else {
         // Return the items. This bit of code would run the most
-        console.log(items.domainsList);
+        // console.log(items.domainsList);
         resolve(items.domainsList);
       }
     });
@@ -390,6 +401,8 @@ function transformScrapedData(scrapedData) {
       id: urlId++,
       title: title || "Untitled Document",
       domain: domain,
+      grade: pageData.grade,
+      url: url,
       summary: pageData.summary,
       highlights: [],
     };
@@ -424,7 +437,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let domainsList = await getDomainsList();
 
     const currentDomain = await getCurrentDomain();
-    console.log(currentDomain);
+    // console.log(currentDomain);
     const transformedData = transformScrapedData(domainsList[currentDomain]);
     dummyData = transformedData;
     console.log(transformedData);
@@ -435,7 +448,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (transformedData.error === "unavailableData") {
       // Populate UI with "No data exists" messages
-      document.querySelector(".grade-letter").textContent = "?";
+      const gradeLetter = document.querySelector(".grade-letter");
+      gradeLetter.textContent = "?";
+      gradeLetter.style.textShadow = "none"; // No glow for unavailable data
+      
       document.querySelector(".parchment-title").textContent = "No Data Exists";
       document.querySelector(".lotr-message").textContent =
         "The data you seek is lost to shadow and flame.";
@@ -443,9 +459,15 @@ document.addEventListener("DOMContentLoaded", function () {
         "<div class='no-data'>We journeyed through shadowed valleys and over windswept peaks, but no scroll bearing the Privacy Policy was found. Perhaps it lies in another realm — or another site.</div>";
     } else {
       // Set main grade and message
-      document.querySelector(".grade-letter").textContent = dummyData.grade;
-      document.querySelector(".parchment-title").textContent =
-        dummyData.message;
+      const gradeLetter = document.querySelector(".grade-letter");
+      gradeLetter.textContent = dummyData.grade;
+      
+      // Apply the enhanced glow effect from gradeData
+      if (gradeData[dummyData.grade]) {
+        gradeLetter.style.textShadow = gradeData[dummyData.grade].glow;
+      }
+      
+      document.querySelector(".parchment-title").textContent = dummyData.message;
       document.querySelector(".lotr-message").textContent = dummyData.phrase;
 
       // Populate URL list

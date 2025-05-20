@@ -2,7 +2,7 @@ chrome.storage.local.clear(function () {
   console.log("All local storage cleared");
 });
 
-const API_URL = "http://localhost:3000/";
+const API_URL = "https://gandalf-the-red.onrender.com/";
 
 async function getPolicyList() {
   /**
@@ -187,7 +187,7 @@ async function updateDomainOverallRating(currDomain) {
 
   for (const url in scrapedPages) {
     const grade = scrapedPages[url].grade;
-    console.log(grade);
+    // console.log(grade);
     if (gradeToValue.hasOwnProperty(grade)) {
       total += gradeToValue[grade];
       count++;
@@ -224,7 +224,7 @@ async function processPolicyUrls(request) {
 
       // Scrape the URL
       let tosText = await scrapePolicyUrl(url);
-      console.log(tosText);
+      // console.log(tosText);
       const verdictObj = await getVerdict(tosText, url);
       // console.log(verdictObj);
       policyUrlsList[url].verdict = verdictObj;
@@ -265,8 +265,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   (async () => {
     if (request.type == "termsFound") {
       const verdict = await processPolicyUrls(request);
-      console.log(verdict)
+      // console.log(verdict)
       await sendResponse(verdict)
+    }
+    else if (request.type == "openPopup"){
+      // chrome.tabs.create({ url: chrome.runtime.getURL("popup.html") });
+      chrome.action.openPopup();
     }
   })();
 
