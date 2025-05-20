@@ -73,12 +73,9 @@ With the wisdom of wizards and some help from AI, it automatically detects priva
 1. Install dependencies:  
    ```bash
    npm install
-   ```
 2. Run the backend server (if applicable):  
    ```bash
    npm run start
-  ```
-
 
 3. Load the extension:
 - Go to `chrome://extensions/`
