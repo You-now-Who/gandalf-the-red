@@ -88,8 +88,8 @@ With the wisdom of wizards and some help from AI, it automatically detects priva
 ## 🙌 Credits
 
 Built with love and sarcasm for **Fusion Hacks**  
-By [Yash Yadav](https://github.com/YashTheCoder)  
-Because even wizards care about digital rights.
+By [404_Not_Found](https://github.com/You-now-Who)
+Because even wizards care about digital rights. <3
 
 ---
 
