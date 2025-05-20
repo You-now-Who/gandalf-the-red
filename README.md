@@ -4,7 +4,7 @@
 **Gandalf the Red** is a browser extension that helps you avoid unknowingly selling your soul in the terms and conditions.  
 With the wisdom of wizards and some help from AI, it automatically detects privacy policies and terms of service, analyzes their risks, and delivers verdicts in a Middle-earth–themed interface.
 
-![Gandalf the Red Banner](https://via.placeholder.com/800x200?text=Gandalf+the+Red)
+![Gandalf the Red Banner](https://i.postimg.cc/X7SMtN5f/lol.gif)
 
 ---
 
