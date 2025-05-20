@@ -87,9 +87,12 @@ With the wisdom of wizards and some help from AI, it automatically detects priva
 
 ## 🙌 Credits
 
-Built with love and sarcasm for **Fusion Hacks**  
+Built with love and sarcasm
+
 By [404_Not_Found](https://github.com/You-now-Who)
+
 Because even wizards care about digital rights. <3
+<a href="https://www.flaticon.com/free-icons/witch-hat" title="witch hat icons">Witch hat icons created by Luvdat - Flaticon</a>
 
 ---
 
